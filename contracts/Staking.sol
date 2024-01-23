@@ -10,6 +10,10 @@ contract Staking {
 
     uint public totalStaked = 0;
 
+    uint public totalRewards = 80000000;
+
+    uint public rewardsPerHour = 1000;
+
     constructor(IERC20 token_) {
         token = token_;
     }

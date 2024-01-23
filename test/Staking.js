@@ -28,4 +28,12 @@ describe("Staking", function () {
   it("should have 0 staked", async function () {
     expect(await this.staking.totalStaked()).to.eq(0)
   })
+
+  it("should have 80,000,000 rewards", async function () {
+    expect(await this.staking.totalRewards()).to.eq(80000000)
+  })
+
+  it("should have 0.01% rewards per hour", async function () {
+    expect(await this.staking.rewardsPerHour()).to.eq(1000)
+  })
 });
