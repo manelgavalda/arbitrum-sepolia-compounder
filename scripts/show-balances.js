@@ -1,18 +1,21 @@
 require('dotenv').config()
-const { Alchemy, Network } = require('alchemy-sdk');
+const { ethers } = require('ethers')
+var token = require('../artifacts/contracts/Token.sol/Token.json')
 
-const settings = {
-  network: Network.ARB_SEPOLIA,
-  apiKey: process.env.ALCHEMY_SEPOLIA_API_KEY
-};
+const provider = new ethers.AlchemyProvider('arbitrum-sepolia', process.env.ALCHEMY_SEPOLIA_API_KEY)
 
-const alchemy = new Alchemy(settings);
+const contract = new ethers.Contract(process.env.TOKEN_ADDRESS, token.abi, provider)
 
-alchemy.core.getBalance(process.env.WALLET_ADDRESS).then((balance) => {
-  const ethBalance = balance / 1e18
+provider.getBalance(process.env.WALLET_ADDRESS).then(balance => {
+  const ethBalance = Number(balance) / 1e18
 
-  console.log(ethBalance)
+  console.log(`ETH balance: ${ethBalance.toFixed(3)}`)
 })
 
+contract.balanceOf(process.env.WALLET_ADDRESS).then(balance => {
+  const ethBalance = Number(balance) / 1e18
 
+  console.log(`TKN balance: ${ethBalance.toFixed(3)}`)
+
+})
 
