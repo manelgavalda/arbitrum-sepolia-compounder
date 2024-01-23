@@ -5,6 +5,10 @@ describe("Staking", function () {
   async function deploy() {
     const Token = await ethers.getContractFactory("Token");
 
+    [owner, addr1, addr2] = await ethers.getSigners();
+
+    this.signer = owner.address
+
     const token = await Token.deploy();
 
     const Staking = await ethers.getContractFactory("Staking");
@@ -35,5 +39,22 @@ describe("Staking", function () {
 
   it("should have 0.01% rewards per hour", async function () {
     expect(await this.staking.rewardsPerHour()).to.eq(1000)
+  })
+
+  function eth(amount) {
+    return ethers.parseEther(amount.toString())
+  }
+
+  it("should transfer amount", async function () {
+    const amount = eth(100)
+
+    console.log(amount, await this.token.totalSupply())
+
+    // await this.staking.deposit(amount)
+
+    // await expect(this.staking.deposit(amount)).to.changeTokenBalances(this.token,
+    //   [this.signer, this.staking],
+    //   [amount, amount]
+    // )
   })
 });

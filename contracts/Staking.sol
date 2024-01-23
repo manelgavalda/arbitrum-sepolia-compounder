@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
+import "hardhat/console.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 
 contract Staking {
@@ -16,5 +17,9 @@ contract Staking {
 
     constructor(IERC20 token_) {
         token = token_;
+    }
+
+    function deposit(uint amount_) external {
+        token.safeTransferFrom(msg.sender, address(this), amount_);
     }
 }
