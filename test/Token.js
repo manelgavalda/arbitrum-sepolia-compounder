@@ -10,15 +10,15 @@ describe("Token", function () {
     return token;
   }
 
-  it("should set the right name", async function () {
-    const token = await loadFixture(deploy);
+  beforeEach(async function () {
+    this.token = await loadFixture(deploy);
+  })
 
-    expect(await token.name()).to.equal('Token');
+  it("should set the right name", async function () {
+    expect(await this.token.name()).to.equal('Token');
   });
 
   it("should set the right supply", async function () {
-    const token = await loadFixture(deploy);
-
-    expect(await token.totalSupply()).to.equal(1000000000000000000000000n);
+    expect(await this.token.totalSupply()).to.equal(1000000000000000000000000n);
   });
 });
