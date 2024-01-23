@@ -8,6 +8,8 @@ contract Staking {
 
     IERC20 public immutable token;
 
+    uint public totalStaked = 0;
+
     constructor(IERC20 token_) {
         token = token_;
     }

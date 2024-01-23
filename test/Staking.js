@@ -24,4 +24,8 @@ describe("Staking", function () {
   it("should have a token", async function () {
     expect(await this.staking.token()).to.eq(this.token.target)
   })
+
+  it("should have 0 staked", async function () {
+    expect(await this.staking.totalStaked()).to.eq(0)
+  })
 });
