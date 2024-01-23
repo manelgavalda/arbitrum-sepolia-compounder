@@ -7,13 +7,18 @@ describe("Token", function () {
 
     const token = await Token.deploy();
 
-    return { token };
+    return token;
   }
 
-  it("Should set the right name and supply", async function () {
-    const { token } = await loadFixture(deploy);
+  it("should set the right name", async function () {
+    const token = await loadFixture(deploy);
 
     expect(await token.name()).to.equal('Token');
+  });
+
+  it("should set the right supply", async function () {
+    const token = await loadFixture(deploy);
+
     expect(await token.totalSupply()).to.equal(1000000000000000000000000n);
   });
 });
