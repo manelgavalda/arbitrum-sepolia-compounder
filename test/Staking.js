@@ -69,4 +69,14 @@ describe("Staking", function () {
       [amount * BigInt(-1), amount]
     )
   })
+
+  it("should emit Deposit event", async function () {
+    const amount = eth(100)
+
+    await this.token.approve(this.staking.target, amount)
+
+    await expect(this.staking.deposit(amount)).to.emit(this.staking, "Deposit").withArgs(
+      this.owner, amount
+    )
+  })
 });

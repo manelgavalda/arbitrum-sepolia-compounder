@@ -10,10 +10,13 @@ contract Staking {
     IERC20 public immutable token;
 
     uint public totalStaked = 0;
-
+    uint public rewardsPerHour = 1000;
     uint public totalRewards = 80000000;
 
-    uint public rewardsPerHour = 1000;
+    event Deposit(address address_, uint amount_);
+
+    mapping(address => uint) public balanceOf;
+    mapping(address => uint) public lastUpdated;
 
     constructor(IERC20 token_) {
         token = token_;
@@ -21,5 +24,9 @@ contract Staking {
 
     function deposit(uint amount_) external {
         token.safeTransferFrom(msg.sender, address(this), amount_);
+        balanceOf[msg.sender] += amount_;
+        lastUpdated[msg.sender] = block.timestamp;
+        totalStaked += amount_;
+        emit Deposit(msg.sender, amount_);
     }
 }
