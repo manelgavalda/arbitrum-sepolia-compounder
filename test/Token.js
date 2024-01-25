@@ -5,9 +5,7 @@ describe("Token", function () {
   async function deploy() {
     const Token = await ethers.getContractFactory("Token");
 
-    const token = await Token.deploy();
-
-    return token;
+    return await Token.deploy();
   }
 
   beforeEach(async function () {
