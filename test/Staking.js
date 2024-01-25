@@ -83,6 +83,18 @@ describe("Staking", function () {
     expect(formattedDate).to.eq(now)
   })
 
+  it("should increment the total staked by amount", async function () {
+    const amount = eth(100)
+
+    await this.token.approve(this.staking.target, amount)
+
+    const totalStaked = await this.staking.totalStaked()
+
+    await this.staking.deposit(amount)
+
+    expect(await this.staking.totalStaked()).to.eq(totalStaked + amount)
+  })
+
   it("should revert if staking address not approved", async function () {
     const amount = eth(100)
 
