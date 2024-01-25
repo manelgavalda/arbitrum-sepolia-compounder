@@ -19,6 +19,6 @@ describe("Token", function () {
   });
 
   it("should set the right supply", async function () {
-    expect(await this.token.totalSupply()).to.equal(1000000000000000000000000n);
+    expect(Number(await this.token.totalSupply())).to.equal(1e24);
   });
 });
