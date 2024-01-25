@@ -45,6 +45,44 @@ describe("Staking", function () {
     expect(await this.staking.rewardsPerHour()).to.eq(1000)
   })
 
+  it("should transfer amount", async function () {
+    const amount = eth(100)
+
+    await this.token.approve(this.staking.target, amount)
+
+    await expect(this.staking.deposit(amount)).to.changeTokenBalances(this.token,
+      [this.owner, this.staking],
+      [amount * BigInt(-1), amount]
+    )
+  })
+
+  it("should increment balance by amount", async function () {
+    const amount = eth(100)
+
+    const balance = await this.staking.balanceOf(this.owner.address)
+
+    await this.token.approve(this.staking.target, amount)
+
+    await this.staking.deposit(amount)
+
+    expect(await this.staking.balanceOf(this.owner.address)).to.eq(balance + amount)
+  })
+
+  it("should have lastUpdated equal to the latest block timestamp", async function () {
+    const amount = eth(100)
+
+    await this.token.approve(this.staking.target, amount)
+
+    await this.staking.deposit(100)
+
+    const time = await this.staking.lastUpdated(this.owner.address)
+
+    const now = new Date().toISOString().slice(0, 13);
+    const formattedDate = new Date(Number(time) * 1000).toISOString().slice(0, 13);
+
+    expect(formattedDate).to.eq(now)
+  })
+
   it("should revert if staking address not approved", async function () {
     const amount = eth(100)
 
@@ -57,17 +95,6 @@ describe("Staking", function () {
     await this.token.approve(this.staking.target, totalSupply)
 
     await expect(this.staking.deposit(totalSupply + BigInt(1))).to.be.reverted
-  })
-
-  it("should transfer amount", async function () {
-    const amount = eth(100)
-
-    await this.token.approve(this.staking.target, amount)
-
-    await expect(this.staking.deposit(amount)).to.changeTokenBalances(this.token,
-      [this.owner, this.staking],
-      [amount * BigInt(-1), amount]
-    )
   })
 
   it("should emit Deposit event", async function () {
