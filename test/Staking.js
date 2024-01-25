@@ -5,9 +5,7 @@ describe("Staking", function () {
   async function deploy() {
     const Token = await ethers.getContractFactory("Token");
 
-    [owner, addr1, addr2] = await ethers.getSigners();
-
-    this.signer = owner.address
+    [owner, account] = await ethers.getSigners();
 
     const token = await Token.deploy();
 
@@ -15,13 +13,19 @@ describe("Staking", function () {
 
     const staking = await Staking.deploy(token.target);
 
-    return { staking, token };
+    return { staking, token, owner, account };
+  }
+
+  function eth(amount) {
+    return ethers.parseEther(amount.toString())
   }
 
   beforeEach(async function () {
     const data = await loadFixture(deploy);
 
+    this.owner = data.owner
     this.token = data.token
+    this.account = data.account
     this.staking = data.staking
   })
 
@@ -41,20 +45,28 @@ describe("Staking", function () {
     expect(await this.staking.rewardsPerHour()).to.eq(1000)
   })
 
-  function eth(amount) {
-    return ethers.parseEther(amount.toString())
-  }
+  it("should revert if staking address not approved", async function () {
+    const amount = eth(100)
+
+    await expect(this.staking.deposit(amount)).to.be.reverted
+  })
+
+  it("should revert if address has insufficient balance", async function () {
+    const totalSupply = await this.token.totalSupply()
+
+    await this.token.approve(this.staking.target, totalSupply)
+
+    await expect(this.staking.deposit(totalSupply + BigInt(1))).to.be.reverted
+  })
 
   it("should transfer amount", async function () {
     const amount = eth(100)
 
-    console.log(amount, await this.token.totalSupply())
+    await this.token.approve(this.staking.target, amount)
 
-    // await this.staking.deposit(amount)
-
-    // await expect(this.staking.deposit(amount)).to.changeTokenBalances(this.token,
-    //   [this.signer, this.staking],
-    //   [amount, amount]
-    // )
+    await expect(this.staking.deposit(amount)).to.changeTokenBalances(this.token,
+      [this.owner, this.staking],
+      [amount * BigInt(-1), amount]
+    )
   })
 });
